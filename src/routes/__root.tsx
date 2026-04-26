@@ -1,6 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts, useLocation, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
-import { Home, Wallet, ArrowRightLeft, Bitcoin, Settings as SettingsIcon } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Home, Wallet, ArrowRightLeft, Bitcoin, Sparkles, Settings as SettingsIcon } from "lucide-react";
 import appCss from "../styles.css?url";
 import { useAppStore } from "@/state/store";
 import { Toaster } from "@/components/ui/sonner";
@@ -60,25 +60,32 @@ function RootComponent() {
   const onboardingCompleted = useAppStore((s) => s.onboardingCompleted);
   const location = useLocation();
   const navigate = useNavigate();
+  const [hydrated, setHydrated] = useState(false);
+
+  // Wait for Zustand persist to rehydrate before rendering app shell
+  // (prevents SSR/client mismatch from localStorage-loaded state)
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
 
   // Gate: redirect to onboarding if not completed
   useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (!hydrated) return;
     const path = location.pathname;
     if (!onboardingCompleted && path !== "/onboarding") {
       navigate({ to: "/onboarding" });
     } else if (onboardingCompleted && path === "/onboarding") {
       navigate({ to: "/" });
     }
-  }, [onboardingCompleted, location.pathname, navigate]);
+  }, [hydrated, onboardingCompleted, location.pathname, navigate]);
 
-  const showNav = onboardingCompleted && location.pathname !== "/onboarding";
+  const showNav = hydrated && onboardingCompleted && location.pathname !== "/onboarding";
 
   return (
     <div className="min-h-screen w-full bg-background">
       <div className="mx-auto flex min-h-screen w-full max-w-[440px] flex-col">
         <main className={`flex-1 ${showNav ? "pb-24" : ""}`}>
-          <Outlet />
+          {hydrated ? <Outlet /> : <div className="min-h-screen" />}
         </main>
         {showNav && <BottomNav />}
       </div>
@@ -94,6 +101,7 @@ function BottomNav() {
     { to: "/accounts", label: "Accounts", icon: Wallet },
     { to: "/transactions", label: "Activity", icon: ArrowRightLeft },
     { to: "/crypto", label: "Crypto", icon: Bitcoin },
+    { to: "/insights", label: "Insights", icon: Sparkles },
     { to: "/settings", label: "Settings", icon: SettingsIcon },
   ] as const;
 

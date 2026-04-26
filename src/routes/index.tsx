@@ -161,10 +161,12 @@ function HomePage() {
               <Sparkles className="h-4 w-4 text-primary" />
               <h2 className="font-display text-lg font-bold">Insights</h2>
             </div>
-            <span className="text-[11px] font-medium text-muted-foreground">{insights.length} active</span>
+            <Link to="/insights" className="flex items-center text-xs font-medium text-muted-foreground hover:text-foreground">
+              See all <ChevronRight className="h-3.5 w-3.5" />
+            </Link>
           </div>
           <div className="mt-3 space-y-2.5">
-            {insights.map((ins, i) => (
+            {insights.slice(0, 3).map((ins, i) => (
               <InsightCard key={ins.id} insight={ins} index={i} />
             ))}
           </div>
