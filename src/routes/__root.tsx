@@ -1,6 +1,6 @@
 import { Outlet, Link, createRootRoute, HeadContent, Scripts, useLocation, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Home, Wallet, ArrowRightLeft, Bitcoin, Settings as SettingsIcon } from "lucide-react";
+import { Home, Wallet, ArrowRightLeft, Bitcoin, Sparkles, Settings as SettingsIcon } from "lucide-react";
 import appCss from "../styles.css?url";
 import { useAppStore } from "@/state/store";
 import { Toaster } from "@/components/ui/sonner";
@@ -101,6 +101,7 @@ function BottomNav() {
     { to: "/accounts", label: "Accounts", icon: Wallet },
     { to: "/transactions", label: "Activity", icon: ArrowRightLeft },
     { to: "/crypto", label: "Crypto", icon: Bitcoin },
+    { to: "/insights", label: "Insights", icon: Sparkles },
     { to: "/settings", label: "Settings", icon: SettingsIcon },
   ] as const;
 
